@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finanzas App</title>
+
+    <link rel="stylesheet" href="src/css/style.css">
+
+</head>
+<body>
+    
+<header>
+    Finanzas
+</header>
+
+<!-- CONTENEDOR DE PANTALLAS -->
+<div class="pantallas-container">
+    <!-- PANTALLA INICIO -->
+    <div id="pantallaInicio" class="pantalla activa">
+
+<section class="panel">
+    <div class="total-box">
+        <h2>Total</h2>
+        <p id="totalGeneral">$0</p>
+    </div>
+
+    <div class="panel-buttons">
+        <button id="btnReset" title="Reiniciar valores">
+            <svg viewBox="0 0 24 24">
+                <path d="M12 5V1L7 6l5 5V7c3.3 0 6 2.7 6 6s-2.7 6-6 6-6-2.7-6-6H4c0 4.4 3.6 8 8 8s8-3.6 8-8-3.6-8-8-8z"/>
+            </svg>
+        </button>
+
+        <button id="btnAgregar">Agregar</button>
+    </div>
+</section>
+
+<!-- FUENTES -->
+<section>
+<div class="card">
+    <div class="card-header">
+        <h2 class="titulo-fuente">Fuentes</h2>
+    </div>
+
+    <div id="listaFuentes">
+        <div class="fuente-item" data-f="Efectivo">
+            <span>Efectivo</span>
+            <strong>$0</strong>
+        </div>
+
+        <div class="fuente-item" data-f="Nequi">
+            <span>Nequi</span>
+            <strong>$0</strong>
+        </div>
+
+        <div class="fuente-item" data-f="Nu">
+            <span>Nu</span>
+            <strong>$0</strong>
+        </div>
+    </div>
+</div>
+</section>
+
+<!-- SOBRES -->
+<main>
+    <div class="sobres-header">
+        <h2>Sobres</h2>
+        <button id="btnCrearSobre">Crear sobre</button>
+    </div>
+
+    <div id="listaSobres" class="sobres-container"></div>
+</main>
+
+<!-- MODAL EDITAR SOBRE -->
+<div id="modalEditar" class="modal hidden">
+    <div class="modal-content">
+        <h2>Editar Sobre</h2>
+        <p id="editarNombreActual"></p>
+
+        <button id="btnCambiarNombre">Cambiar nombre</button>
+        <button id="btnCambiarPorcentaje">Cambiar porcentaje</button>
+        <button id="btnEliminarSobre" class="danger">Eliminar</button>
+
+        <button id="btnCerrarModal" class="close">Cerrar</button>
+    </div>
+</div>
+
+<!-- MENÚ FLOTANTE DE ACCIONES SOBRE -->
+<div id="menuFlotanteSobre" class="menu-flotante hidden">
+    <div class="menu-flotante-content">
+        <h3 id="nombreSobreFlotante"></h3>
+        <div class="menu-flotante-buttons">
+            <button id="btnAgregarDirectoFlotante" class="btn-flotante btn-agregar">
+                <span>Agregar directo</span>
+            </button>
+            <button id="btnGastarSobreFlotante" class="btn-flotante btn-gastar">
+                <span>Gastar</span>
+            </button>
+        </div>
+        <button id="btnCerrarFlotante" class="btn-cerrar-flotante">✕</button>
+    </div>
+    <div class="menu-flotante-backdrop"></div>
+</div>
+
+<!-- MODAL AGREGAR DINERO -->
+<div id="modalAgregar" class="modal hidden">
+    <div class="modal-content">
+        <h2>Agregar dinero</h2>
+
+        <p class="modal-sub">Selecciona la fuente:</p>
+
+        <div id="listaFuentesModal" class="fuentes-modal"></div>
+
+        <input id="inputCantidadAgregar" type="number" placeholder="Cantidad a agregar" class="input-modal">
+        <p id="mensajeErrorAgregar" class="error-message" style="display: none; color: #d32f2f; font-size: 13px; margin-top: 5px;"></p>
+
+        <button id="btnConfirmarAgregar">Agregar</button>
+        <button id="btnCerrarAgregar" class="close">Cerrar</button>
+    </div>
+</div>
+
+<!-- MODAL AGREGAR DIRECTO A SOBRE -->
+<div id="modalAgregarDirecto" class="modal hidden">
+    <div class="modal-content">
+        <h2>Agregar directo a: <span id="nombreSobreDirecto"></span></h2>
+        <p id="saldoSobreDirecto" style="text-align: center; color: rgba(139, 0, 197, 0.7); font-size: 14px; margin-top: 5px; margin-bottom: 15px; font-weight: 600;"></p>
+
+        <p class="modal-sub">Selecciona la fuente:</p>
+
+        <div id="listaFuentesDirecto" class="fuentes-modal"></div>
+
+        <input id="inputCantidadDirecto" type="number" placeholder="Cantidad a agregar" class="input-modal">
+
+        <button id="btnConfirmarDirecto">Agregar</button>
+        <button id="btnCerrarDirecto" class="close">Cerrar</button>
+    </div>
+</div>
+
+<!-- MODAL GASTAR DE SOBRE -->
+<div id="modalGastarSobre" class="modal hidden">
+    <div class="modal-content">
+        <h2>Gastar de: <span id="nombreSobreGastar"></span></h2>
+        <p id="saldoSobreGastar" style="text-align: center; color: rgba(139, 0, 197, 0.7); font-size: 14px; margin-top: 5px; margin-bottom: 15px; font-weight: 600;"></p>
+
+        <p class="modal-sub">Selecciona la fuente:</p>
+
+        <div id="listaFuentesGastar" class="fuentes-modal"></div>
+
+        <input id="inputCantidadGastar" type="number" placeholder="Cantidad a gastar" class="input-modal">
+        <p id="mensajeErrorGastar" class="error-message" style="display: none; color: #d32f2f; font-size: 13px; margin-top: 5px;"></p>
+
+        <button id="btnConfirmarGastar">Gastar</button>
+        <button id="btnCerrarGastar" class="close">Cerrar</button>
+    </div>
+</div>
+
+<!-- MODAL CONFIRMAR RESET -->
+<div id="modalConfirmarReset" class="modal hidden">
+    <div class="modal-content">
+        <h2>¿Reiniciar todos los valores?</h2>
+        <p class="modal-sub" style="margin: 20px 0; color: #666;">Esta acción pondrá todos los valores en $0. Esta acción no se puede deshacer.</p>
+        
+        <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
+            <button id="btnConfirmarReset" class="danger" style="background-color: #d32f2f; color: white; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">Sí, reiniciar</button>
+            <button id="btnCancelarReset" class="close" style="padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL CREAR SOBRE -->
+<div id="modalCrearSobre" class="modal hidden">
+    <div class="modal-content">
+        <h2>Crear sobre</h2>
+
+        <p class="modal-sub">Nombre del sobre:</p>
+        <input id="inputNombreSobre" type="text" placeholder="Ej: Ahorros, Gastos, etc." class="input-modal">
+
+        <p class="modal-sub" style="margin-top: 15px;">Porcentaje asignado:</p>
+        <input id="inputPorcentajeSobre" type="number" placeholder="Porcentaje" class="input-modal">
+        <p id="porcentajeDisponibleInfo" style="font-size: 13px; color: #666; margin-top: 5px;"></p>
+        
+        <p id="mensajeErrorCrearSobre" class="error-message" style="display: none; color: #d32f2f; font-size: 13px; margin-top: 10px;"></p>
+
+        <button id="btnConfirmarCrearSobre">Crear sobre</button>
+        <button id="btnCerrarCrearSobre" class="close">Cerrar</button>
+    </div>
+
+</div>
+
+<section class="gastos">
+    <div class="gastos-header">
+        <h2>Gastos Fijos</h2>
+    </div>
+    <div class="gastar-content">
+        <div class="gastar-content-header">
+            <button id="btnAgregarGasto">Agregar gasto</button>
+            <svg class="gastar-icono-eliminar-modo" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6h14zM10 11v6M14 11v6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </div>
+    </div>
+</section>
+
+<!-- MODAL AGREGAR GASTO -->
+<div id="modalAgregarGasto" class="modal hidden">
+    <div class="modal-content">
+        <h2>Agregar gasto</h2>
+
+        <p class="modal-sub">Nombre del gasto:</p>
+        <input id="inputNombreGasto" type="text" placeholder="Ej: Comida, Transporte, etc." class="input-modal">
+        <p id="mensajeErrorAgregarGasto" class="error-message" style="display: none; color: #d32f2f; font-size: 13px; margin-top: 5px;"></p>
+
+        <button id="btnConfirmarAgregarGasto">Agregar</button>
+        <button id="btnCerrarAgregarGasto" class="close">Cerrar</button>
+    </div>
+</div>
+
+<!-- MODAL CONFIGURAR GASTO FIJO -->
+<div id="modalConfigurarGasto" class="modal hidden">
+    <div class="modal-content">
+        <h2>Configurar gasto fijo</h2>
+        <p id="nombreGastoConfigurar" style="color: var(--morado); font-weight: 600; margin-bottom: 20px; font-size: 18px;"></p>
+
+        <p class="modal-sub">Monto del gasto:</p>
+        <input id="inputMontoGasto" type="number" placeholder="Ej: 50000" class="input-modal">
+
+        <p class="modal-sub" style="margin-top: 15px;">Sobre de origen:</p>
+        <div id="listaSobresConfigurar" class="fuentes-modal"></div>
+        <p id="mensajeErrorConfigurarGasto" class="error-message" style="display: none; color: #d32f2f; font-size: 13px; margin-top: 5px;"></p>
+
+        <button id="btnConfirmarConfigurarGasto">Guardar configuración</button>
+        <button id="btnCerrarConfigurarGasto" class="close">Cerrar</button>
+    </div>
+</div>
+
+    </div>
+    
+    <!-- PANTALLA MOVIMIENTOS -->
+    <div id="pantallaMovimientos" class="pantalla">
+        <div class="pantalla-content">
+            <h2 class="movimientos-titulo">Movimientos</h2>
+            
+            <!-- SECCIÓN DE FILTROS -->
+            <div class="filtros-container">
+                <div class="filtro-columna">
+                    <div class="filtro-item filtro-fecha">
+                        <label class="filtro-label">Fecha y Hora</label>
+                        <input type="date" id="filtroFecha" class="filtro-input">
+                    </div>
+                    
+                    <div class="filtro-item filtro-horas">
+                        <div class="filtro-horas-container">
+                            <input type="time" id="filtroHoraDesde" class="filtro-input filtro-hora" placeholder="Desde">
+                            <span class="filtro-horas-separador">-</span>
+                            <input type="time" id="filtroHoraHasta" class="filtro-input filtro-hora" placeholder="Hasta">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="filtro-columna">
+                    <div class="filtro-item filtro-categoria">
+                        <label class="filtro-label">Categoría</label>
+                        <select id="filtroCategoria" class="filtro-select">
+                            <option value="">Todas</option>
+                            <option value="ingreso">Ingresos</option>
+                            <option value="gasto">Gastos</option>
+                            <option value="transferencia">Transferencias</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filtro-item filtro-item-sobre">
+                        <select id="filtroItemSobre" class="filtro-select">
+                            <option value="">Todos</option>
+                            <!-- Se llenará dinámicamente con sobres y gastos -->
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- SECCIÓN DE CONTENIDO -->
+            <div class="movimientos-content">
+                <div class="movimientos-content-header">
+                    <svg id="btnEliminarMovimientos" class="icono-eliminar-movimientos" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6h14zM10 11v6M14 11v6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <!-- Aquí irá el contenido de los movimientos -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- BARRA DE NAVEGACIÓN INFERIOR -->
+<div class="navegacion-inferior">
+    <button id="btnInicio" class="nav-btn activo">
+        <span>Inicio</span>
+    </button>
+    <button id="btnMovimientos" class="nav-btn">
+        <span>Movimientos</span>
+    </button>
+</div>
+
+<!-- MODAL CONFIRMAR ELIMINAR MOVIMIENTOS -->
+<div id="modalConfirmarEliminarMovimientos" class="modal hidden">
+    <div class="modal-content">
+        <h2>¿Eliminar todos los movimientos?</h2>
+        <p class="modal-sub" style="margin: 20px 0; color: #666;">Esta acción eliminará todos los movimientos registrados. Esta acción no se puede deshacer.</p>
+        
+        <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
+            <button id="btnConfirmarEliminarMovimientos" class="danger" style="background-color: #d32f2f; color: white; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">Sí, eliminar</button>
+            <button id="btnCancelarEliminarMovimientos" class="close" style="padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<!-- NOTIFICACIONES TOAST -->
+<div id="toastContainer" class="toast-container"></div>
+
+<script src="src/js/app.js"></script>
+</body>
+</html>
