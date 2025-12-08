@@ -5,7 +5,7 @@ function formatoCOP(valor) {
     return "$" + Number(valor).toLocaleString("es-CO");
 }
 
-// -----------------------------------------------------
+// ----------------------------------------------------
 // SISTEMA DE NOTIFICACIONES
 // -----------------------------------------------------
 function mostrarNotificacion(mensaje, tipo = "info", duracion = 3000) {
