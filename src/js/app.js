@@ -5,7 +5,7 @@ function formatoCOP(valor) {
     return "$" + Number(valor).toLocaleString("es-CO");
 }
 
-// ----------------------------------------------------
+// -----------------------------------------------------
 // SISTEMA DE NOTIFICACIONES
 // -----------------------------------------------------
 function mostrarNotificacion(mensaje, tipo = "info", duracion = 3000) {
@@ -994,6 +994,7 @@ if (btnCerrarCambiarPorcentaje) {
     });
 }
 
+// ✅ CORRECCIÓN DEL BUG DE PORCENTAJES
 if (btnConfirmarCambiarPorcentaje) {
     btnConfirmarCambiarPorcentaje.addEventListener("click", () => {
         let nuevoStr = inputNuevoPorcentaje.value.trim();
@@ -1010,15 +1011,17 @@ if (btnConfirmarCambiarPorcentaje) {
             return;
         }
 
-        porcentajeDisponible += sobreActual.porcentaje;
+        // Calcular el porcentaje disponible incluyendo el del sobre actual
+        const porcentajeDisponibleParaEseSobre = porcentajeDisponible + sobreActual.porcentaje;
 
-        if (nuevo > porcentajeDisponible) {
-            mensajeErrorCambiarPorcentaje.textContent = `No tienes suficiente porcentaje disponible. Disponible: ${porcentajeDisponible}%`;
+        if (nuevo > porcentajeDisponibleParaEseSobre) {
+            mensajeErrorCambiarPorcentaje.textContent = `No tienes suficiente porcentaje disponible. Disponible: ${porcentajeDisponibleParaEseSobre}%`;
             mensajeErrorCambiarPorcentaje.style.display = "block";
-            porcentajeDisponible -= sobreActual.porcentaje;
             return;
         }
 
+        // Solo si todo es válido, modificar porcentajeDisponible
+        porcentajeDisponible += sobreActual.porcentaje;
         porcentajeDisponible -= nuevo;
         sobreActual.porcentaje = nuevo;
 
@@ -2405,3 +2408,4 @@ if (inputMontoGasto && btnConfirmarConfigurarGasto) {
         }
     });
 }
+
