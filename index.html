@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finanzas App</title>
+
+    <!-- Favicon - Bolsa de moneda -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='grad1' x1='0%25' y1='0%25' x2='0%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%238b00c5;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%2362008d;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M30 20 L70 20 L75 35 L80 80 L20 80 L25 35 Z' fill='url(%23grad1)' stroke='%2362008d' stroke-width='2'/%3E%3Cpath d='M30 20 L30 25 L25 35 L25 75 L20 80 L80 80 L75 75 L75 35 L70 25 L70 20' fill='none' stroke='%2355007a' stroke-width='2'/%3E%3Ccircle cx='50' cy='45' r='8' fill='%23ffd700' stroke='%23ffb300' stroke-width='1.5'/%3E%3Ccircle cx='42' cy='50' r='6' fill='%23ffd700' stroke='%23ffb300' stroke-width='1.5'/%3E%3Ccircle cx='58' cy='50' r='6' fill='%23ffd700' stroke='%23ffb300' stroke-width='1.5'/%3E%3Ccircle cx='50' cy='58' r='6' fill='%23ffd700' stroke='%23ffb300' stroke-width='1.5'/%3E%3Cpath d='M35 30 Q50 25 65 30' fill='none' stroke='%23ffd700' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E">
+
+    <link rel="stylesheet" href="src/css/style.css">
+</head>
+<body>
+    
+<header>
+    <span>Finanzas</span>
+    
+    <!-- Barra de autenticación (visible cuando NO hay usuario logueado) -->
+    <div id="authBar" class="auth-bar">
+        <button id="btnAbrirLogin" class="auth-btn">Iniciar sesión</button>
+        <button id="btnAbrirSignup" class="auth-btn">Registrarse</button>
+    </div>
+    
+    <!-- Ícono de usuario (visible cuando HAY usuario logueado) -->
+    <button id="btnAbrirMenuUsuario" class="btn-icono-usuario hidden" title="Menú de usuario">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 12C14.7614 12 17 9.76142 17 7C17 4.23858 14.7614 2 12 2C9.23858 2 7 4.23858 7 7C7 9.76142 9.23858 12 12 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M20.59 22C20.59 18.13 16.74 15 12 15C7.26 15 3.41 18.13 3.41 22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </button>
+</header>
+
+<!-- CONTENEDOR DE PANTALLAS -->
+<div class="pantallas-container">
+    <!-- PANTALLA INICIO -->
+    <div id="pantallaInicio" class="pantalla activa">
+
+<section class="panel">
+    <div class="total-box">
+        <h2>Total</h2>
+        <p id="totalGeneral">$0</p>
+    </div>
+
+    <div class="panel-buttons">
+        <button id="btnReset" title="Reiniciar valores">
+            <svg viewBox="0 0 24 24">
+                <path d="M12 5V1L7 6l5 5V7c3.3 0 6 2.7 6 6s-2.7 6-6 6-6-2.7-6-6H4c0 4.4 3.6 8 8 8s8-3.6 8-8-3.6-8-8-8z"/>
+            </svg>
+        </button>
+
+        <button id="btnAgregar">Agregar</button>
+    </div>
+</section>
+
+<!-- FUENTES -->
+<section>
+<div class="card">
+    <div class="card-header">
+        <h2 class="titulo-fuente">Fuentes</h2>
+        <button id="btnTransferir" class="btn-transferir">Transferir</button>
+    </div>
+
+    <div id="listaFuentes">
+        <div class="fuente-item" data-f="Efectivo">
+            <span>Efectivo</span>
+            <strong>$0</strong>
+        </div>
+
+        <div class="fuente-item" data-f="Nequi">
+            <span>Nequi</span>
+            <strong>$0</strong>
+        </div>
+
+        <div class="fuente-item" data-f="Nu">
+            <span>Nu</span>
+            <strong>$0</strong>
+        </div>
+    </div>
+</div>
+</section>
+
+<!-- SOBRES -->
+<main>
+    <div class="sobres-header">
+        <h2>Sobres</h2>
+        <button id="btnCrearSobre">Crear sobre</button>
+    </div>
+
+    <div id="listaSobres" class="sobres-container"></div>
+</main>
+
+<section class="gastos">
+    <div class="gastos-header">
+        <h2>Gastos Fijos</h2>
+    </div>
+    <div class="gastar-content">
+        <div class="gastar-content-header">
+            <button id="btnAgregarGasto">Agregar gasto</button>
+            <svg class="gastar-icono-eliminar-modo" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6h14zM10 11v6M14 11v6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </div>
+    </div>
+</section>
+
+<!-- DINERO PRESTADO -->
+<section class="dinero-prestado">
+    <div class="dinero-prestado-header">
+        <h2>Dinero Prestado</h2>
+        <button id="btnCrearPrestamo">Crear préstamo</button>
+    </div>
+    <div class="dinero-prestado-content">
+        <!-- El contenido se agregará dinámicamente -->
+</div>
+</section>
+
+<!-- ESTADÍSTICAS -->
+<section class="estadisticas">
+    <div class="estadisticas-header">
+        <h2>Estadísticas</h2>
+        <button id="btnResetEstadisticas" title="Reiniciar filtros">
+            <svg viewBox="0 0 24 24">
+                <path d="M12 5V1L7 6l5 5V7c3.3 0 6 2.7 6 6s-2.7 6-6 6-6-2.7-6-6H4c0 4.4 3.6 8 8 8s8-3.6 8-8-3.6-8-8-8z"/>
+            </svg>
+        </button>
+    </div>
+    <div class="estadisticas-filtros">
+        <button class="filtro-tiempo activo" data-filtro="24h">Últimas 24h</button>
+        <button class="filtro-tiempo" data-filtro="semana">Última semana</button>
+        <button class="filtro-tiempo" data-filtro="mes">Último mes</button>
+    </div>
+    <div class="estadisticas-content">
+        <div class="estadisticas-table-header">
+            <span class="col-nombre">Sobre</span>
+            <span class="col-egreso">Egreso</span>
+            <span class="col-ingreso">Ingreso</span>
+        </div>
+        <div id="estadisticasTableBody" class="estadisticas-table-body">
+            <!-- El contenido se agregará dinámicamente -->
+    </div>
+</div>
+</section>
+
+    </div>
+
+    <!-- PANTALLA MOVIMIENTOS -->
+    <div id="pantallaMovimientos" class="pantalla">
+        <div class="pantalla-content">
+            <h2 class="movimientos-titulo">Movimientos</h2>
+            
+            <!-- SECCIÓN DE FILTROS -->
+            <div class="filtros-container">
+                <div class="filtro-columna">
+                    <div class="filtro-item filtro-fecha">
+                        <label class="filtro-label">Fecha y Hora</label>
+                        <input type="date" id="filtroFecha" class="filtro-input">
+                    </div>
+                    
+                    <div class="filtro-item filtro-horas">
+                        <div class="filtro-horas-container">
+                            <input type="time" id="filtroHoraDesde" class="filtro-input filtro-hora" placeholder="Desde">
+                            <span class="filtro-horas-separador">-</span>
+                            <input type="time" id="filtroHoraHasta" class="filtro-input filtro-hora" placeholder="Hasta">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="filtro-columna">
+                    <div class="filtro-item filtro-categoria">
+                        <label class="filtro-label">Categoría</label>
+                        <select id="filtroCategoria" class="filtro-select">
+                            <option value="">Todas</option>
+                            <option value="ingreso">Ingresos</option>
+                            <option value="gasto">Gastos</option>
+                            <option value="transferencia">Transferencias</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filtro-item filtro-item-sobre">
+                        <select id="filtroItemSobre" class="filtro-select">
+                            <option value="">Todos</option>
+                            <!-- Se llenará dinámicamente con sobres y gastos -->
+                        </select>
+                    </div>
+    </div>
+</div>
+
+            <!-- SECCIÓN DE CONTENIDO -->
+            <div class="movimientos-content">
+                <div class="movimientos-content-header">
+                    <svg id="btnEliminarMovimientos" class="icono-eliminar-movimientos" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6h14zM10 11v6M14 11v6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <!-- Aquí irá el contenido de los movimientos -->
+            </div>
+        </div>
+    </div>
+
+    <!-- PANTALLA CONFIGURACIÓN -->
+    <div id="pantallaConfiguracion" class="pantalla">
+        <div class="pantalla-content">
+            <h2 class="configuracion-titulo">Configuración</h2>
+            
+            <!-- SECCIÓN TEMA -->
+            <div class="configuracion-seccion">
+                <h3 class="configuracion-subtitulo">Apariencia</h3>
+                
+                <div class="configuracion-opcion">
+                    <div class="configuracion-opcion-info">
+                        <span class="configuracion-opcion-titulo">Tema</span>
+                        <span class="configuracion-opcion-descripcion">Elige entre tema claro u oscuro</span>
+                    </div>
+                    <div class="configuracion-toggle-container">
+                        <button id="toggleTema" class="configuracion-toggle">
+                            <span class="toggle-slider"></span>
+                            <span class="toggle-labels">
+                                <span class="toggle-label">Claro</span>
+                                <span class="toggle-label">Oscuro</span>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- SECCIÓN IDIOMA -->
+            <div class="configuracion-seccion">
+                <h3 class="configuracion-subtitulo">Idioma</h3>
+                
+                <div class="configuracion-opcion">
+                    <div class="configuracion-opcion-info">
+                        <span class="configuracion-opcion-titulo">Idioma de la aplicación</span>
+                        <span class="configuracion-opcion-descripcion">Selecciona tu idioma preferido</span>
+                    </div>
+                    <select id="selectIdioma" class="configuracion-select">
+                        <option value="es">Español</option>
+                        <option value="en">English</option>
+                        <!-- Se pueden agregar más idiomas aquí -->
+                    </select>
+                </div>
+            </div>
+            
+            <!-- SECCIÓN MONEDA -->
+            <div class="configuracion-seccion">
+                <h3 class="configuracion-subtitulo">Moneda</h3>
+                
+                <div class="configuracion-opcion">
+                    <div class="configuracion-opcion-info">
+                        <span class="configuracion-opcion-titulo">Moneda predeterminada</span>
+                        <span class="configuracion-opcion-descripcion">Moneda que se mostrará en los montos</span>
+                    </div>
+                    <select id="selectMoneda" class="configuracion-select">
+                        <option value="COP">COP - Peso colombiano</option>
+                        <option value="USD">USD - Dólar estadounidense</option>
+                        <option value="EUR">EUR - Euro</option>
+                        <option value="MXN">MXN - Peso mexicano</option>
+                        <option value="ARS">ARS - Peso argentino</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- SECCIÓN FORMATO DE FECHA -->
+            <div class="configuracion-seccion">
+                <h3 class="configuracion-subtitulo">Formato</h3>
+                
+                <div class="configuracion-opcion">
+                    <div class="configuracion-opcion-info">
+                        <span class="configuracion-opcion-titulo">Formato de fecha</span>
+                        <span class="configuracion-opcion-descripcion">Cómo se mostrarán las fechas</span>
+                    </div>
+                    <select id="selectFormatoFecha" class="configuracion-select">
+                        <option value="DD/MM/YYYY">DD/MM/YYYY (Día/Mes/Año)</option>
+                        <option value="MM/DD/YYYY">MM/DD/YYYY (Mes/Día/Año)</option>
+                        <option value="YYYY-MM-DD">YYYY-MM-DD (Año-Mes-Día)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- SECCIÓN ELIMINAR CUENTA -->
+            <div class="configuracion-seccion configuracion-seccion-peligro">
+                <h3 class="configuracion-subtitulo configuracion-subtitulo-peligro">Cuenta</h3>
+                
+                <div class="configuracion-opcion">
+                    <div class="configuracion-opcion-info">
+                        <span class="configuracion-opcion-titulo configuracion-opcion-titulo-peligro">Eliminar cuenta</span>
+                        <span class="configuracion-opcion-descripcion">Elimina tu cuenta y todos tus datos permanentemente. Esta acción no se puede deshacer.</span>
+                    </div>
+                    <button id="btnEliminarCuenta" class="btn-eliminar-cuenta">Eliminar cuenta</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- BARRA DE NAVEGACIÓN INFERIOR -->
+<div class="navegacion-inferior">
+    <button id="btnInicio" class="nav-btn activo">
+        <span>Inicio</span>
+    </button>
+    <button id="btnMovimientos" class="nav-btn">
+        <span>Movimientos</span>
+    </button>
+</div>
+
+<!-- ============================================
+     TODOS LOS MODALES (FUERA DEL CONTENEDOR DE PANTALLAS)
+     ============================================ -->
+
+<!-- MENÚ FLOTANTE DE ACCIONES SOBRE -->
+<div id="menuFlotanteSobre" class="menu-flotante hidden">
+    <div class="menu-flotante-content">
+        <h3 id="nombreSobreFlotante"></h3>
+        <div class="menu-flotante-buttons">
+            <button id="btnAgregarDirectoFlotante" class="btn-flotante btn-agregar">
+                <span>Agregar directo</span>
+            </button>
+            <button id="btnGastarSobreFlotante" class="btn-flotante btn-gastar">
+                <span>Gastar</span>
+            </button>
+        </div>
+        <button id="btnCerrarFlotante" class="btn-cerrar-flotante">✕</button>
+    </div>
+    <div class="menu-flotante-backdrop"></div>
+</div>
+
+<!-- MODAL AGREGAR DINERO -->
+<div id="modalAgregar" class="modal hidden">
+    <div class="modal-content">
+        <h2>Agregar dinero</h2>
+
+        <p class="modal-sub">Selecciona la fuente:</p>
+
+        <div id="listaFuentesModal" class="fuentes-modal"></div>
+
+        <input id="inputCantidadAgregar" type="number" placeholder="Cantidad a agregar" class="input-modal">
+        <p id="mensajeErrorAgregar" class="error-message" style="display: none; color: #d32f2f; font-size: 13px; margin-top: 5px;"></p>
+
+        <button id="btnConfirmarAgregar">Agregar</button>
+        <button id="btnCerrarAgregar" class="close">Cerrar</button>
+    </div>
+</div>
+
+<!-- MODAL TRANSFERIR -->
+<div id="modalTransferir" class="modal hidden">
+    <div class="modal-content">
+        <h2>Transferir dinero</h2>
+        
+        <div class="transferir-columnas">
+            <div class="transferir-columna">
+                <p class="modal-sub">Desde:</p>
+                <div id="listaFuentesDesde" class="fuentes-transferir"></div>
+            </div>
+            
+            <div class="transferir-columna">
+                <p class="modal-sub">Hacia:</p>
+                <div id="listaFuentesHacia" class="fuentes-transferir"></div>
+            </div>
+        </div>
+        
+        <input id="inputCantidadTransferir" type="number" placeholder="Cantidad a transferir" class="input-modal">
+        <p id="mensajeErrorTransferir" class="error-message" style="display: none; color: #d32f2f; font-size: 13px; margin-top: 5px;"></p>
+        
+        <button id="btnConfirmarTransferir">Transferir</button>
+        <button id="btnCerrarTransferir" class="close">Cerrar</button>
+    </div>
+</div>
+
+<!-- MODAL CONFIRMAR ELIMINAR MOVIMIENTOS -->
+<div id="modalConfirmarEliminarMovimientos" class="modal hidden">
+    <div class="modal-content">
+        <h2>¿Eliminar todos los movimientos?</h2>
+        <p class="modal-sub" style="margin: 20px 0; color: #666;">Esta acción eliminará todos los movimientos registrados. Esta acción no se puede deshacer.</p>
+        
+        <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
+            <button id="btnConfirmarEliminarMovimientos" class="danger" style="background-color: #d32f2f; color: white; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">Sí, eliminar</button>
+            <button id="btnCancelarEliminarMovimientos" class="close" style="padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL AGREGAR DIRECTO A SOBRE -->
+<div id="modalAgregarDirecto" class="modal hidden">
+    <div class="modal-content">
+        <h2>Agregar directo a: <span id="nombreSobreDirecto"></span></h2>
+        <p id="saldoSobreDirecto" style="text-align: center; color: rgba(139, 0, 197, 0.7); font-size: 14px; margin-top: 5px; margin-bottom: 15px; font-weight: 600;"></p>
+
+        <p class="modal-sub">Selecciona la fuente:</p>
+
+        <div id="listaFuentesDirecto" class="fuentes-modal"></div>
+
+        <input id="inputCantidadDirecto" type="number" placeholder="Cantidad a agregar" class="input-modal">
+
+        <button id="btnConfirmarDirecto">Agregar</button>
+        <button id="btnCerrarDirecto" class="close">Cerrar</button>
+    </div>
+</div>
+
+<!-- MODAL GASTAR DE SOBRE -->
+<div id="modalGastarSobre" class="modal hidden">
+    <div class="modal-content">
+        <h2>Gastar de: <span id="nombreSobreGastar"></span></h2>
+        <p id="saldoSobreGastar" style="text-align: center; color: rgba(139, 0, 197, 0.7); font-size: 14px; margin-top: 5px; margin-bottom: 15px; font-weight: 600;"></p>
+
+        <p class="modal-sub">Selecciona la fuente:</p>
+
+        <div id="listaFuentesGastar" class="fuentes-modal"></div>
+
+        <input id="inputCantidadGastar" type="number" placeholder="Cantidad a gastar" class="input-modal">
+        <p id="mensajeErrorGastar" class="error-message" style="display: none; color: #d32f2f; font-size: 13px; margin-top: 5px;"></p>
+
+        <button id="btnConfirmarGastar">Gastar</button>
+        <button id="btnCerrarGastar" class="close">Cerrar</button>
+    </div>
+</div>
+
+<!-- MODAL CONFIRMAR RESET -->
+<div id="modalConfirmarReset" class="modal hidden">
+    <div class="modal-content">
+        <h2>¿Reiniciar todos los valores?</h2>
+        <p class="modal-sub" style="margin: 20px 0; color: #666;">Esta acción pondrá todos los valores en $0. Esta acción no se puede deshacer.</p>
+        
+        <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
+            <button id="btnConfirmarReset" class="danger" style="background-color: #d32f2f; color: white; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">Sí, reiniciar</button>
+            <button id="btnCancelarReset" class="close" style="padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL CREAR SOBRE -->
+<div id="modalCrearSobre" class="modal hidden">
+    <div class="modal-content">
+        <h2>Crear sobre</h2>
+
+        <p class="modal-sub">Nombre del sobre:</p>
+        <input id="inputNombreSobre" type="text" placeholder="Ej: Ahorros, Gastos, etc." class="input-modal">
+
+        <p class="modal-sub" style="margin-top: 15px;">Porcentaje asignado:</p>
+        <input id="inputPorcentajeSobre" type="number" placeholder="Porcentaje" class="input-modal">
+        <p id="porcentajeDisponibleInfo" style="font-size: 13px; color: #666; margin-top: 5px;"></p>
+        
+        <p id="mensajeErrorCrearSobre" class="error-message" style="display: none; color: #d32f2f; font-size: 13px; margin-top: 10px;"></p>
+
+        <button id="btnConfirmarCrearSobre">Crear sobre</button>
+        <button id="btnCerrarCrearSobre" class="close">Cerrar</button>
+    </div>
+</div>
+
+<!-- MODAL EDITAR SOBRE -->
+<div id="modalEditar" class="modal hidden">
+    <div class="modal-content">
+        <h2>Editar Sobre</h2>
+        <p id="editarNombreActual"></p>
+
+        <button id="btnCambiarNombre">Cambiar nombre</button>
+        <button id="btnCambiarPorcentaje">Cambiar porcentaje</button>
+        <button id="btnEliminarSobre" class="danger">Eliminar</button>
+
+        <button id="btnCerrarModal" class="close">Cerrar</button>
+    </div>
+    </div>
+
+<!-- MODAL CAMBIAR NOMBRE SOBRE -->
+<div id="modalCambiarNombre" class="modal hidden">
+    <div class="modal-content">
+        <h2>Cambiar nombre del sobre</h2>
+        <p class="modal-sub">Nuevo nombre:</p>
+        <input id="inputNuevoNombre" type="text" placeholder="Ej: Ahorros, Gastos, etc." class="input-modal">
+        <p id="mensajeErrorCambiarNombre" class="error-message" style="display: none; color: #d32f2f; font-size: 13px; margin-top: 5px;"></p>
+        <button id="btnConfirmarCambiarNombre">Confirmar</button>
+        <button id="btnCerrarCambiarNombre" class="close">Cancelar</button>
+    </div>
+</div>
+
+<!-- MODAL CAMBIAR PORCENTAJE SOBRE -->
+<div id="modalCambiarPorcentaje" class="modal hidden">
+    <div class="modal-content">
+        <h2>Cambiar porcentaje del sobre</h2>
+        <p class="modal-sub">Nuevo porcentaje:</p>
+        <input id="inputNuevoPorcentaje" type="number" placeholder="Porcentaje" class="input-modal">
+        <p id="porcentajeDisponibleEditar" style="font-size: 13px; color: #666; margin-top: 5px;"></p>
+        <p id="mensajeErrorCambiarPorcentaje" class="error-message" style="display: none; color: #d32f2f; font-size: 13px; margin-top: 5px;"></p>
+        <button id="btnConfirmarCambiarPorcentaje">Confirmar</button>
+        <button id="btnCerrarCambiarPorcentaje" class="close">Cancelar</button>
+    </div>
+</div>
+
+<!-- MODAL CONFIRMAR ELIMINAR SOBRE -->
+<div id="modalConfirmarEliminarSobre" class="modal hidden">
+    <div class="modal-content">
+        <h2>¿Eliminar sobre?</h2>
+        <p class="modal-sub" style="margin: 20px 0; color: #666;">Esta acción eliminará el sobre permanentemente. Esta acción no se puede deshacer.</p>
+        <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
+            <button id="btnConfirmarEliminarSobre" class="danger" style="background-color: #d32f2f; color: white; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">Sí, eliminar</button>
+            <button id="btnCancelarEliminarSobre" class="close" style="padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL AGREGAR GASTO -->
+<div id="modalAgregarGasto" class="modal hidden">
+    <div class="modal-content">
+        <h2>Agregar gasto</h2>
+
+        <p class="modal-sub">Nombre del gasto:</p>
+        <input id="inputNombreGasto" type="text" placeholder="Ej: Comida, Transporte, etc." class="input-modal">
+        <p id="mensajeErrorAgregarGasto" class="error-message" style="display: none; color: #d32f2f; font-size: 13px; margin-top: 5px;"></p>
+
+        <button id="btnConfirmarAgregarGasto">Agregar</button>
+        <button id="btnCerrarAgregarGasto" class="close">Cerrar</button>
+    </div>
+</div>
+
+<!-- MODAL CONFIGURAR GASTO FIJO -->
+<div id="modalConfigurarGasto" class="modal hidden">
+    <div class="modal-content">
+        <h2>Configurar gasto fijo</h2>
+        <p id="nombreGastoConfigurar" style="color: var(--morado); font-weight: 600; margin-bottom: 20px; font-size: 18px;"></p>
+
+        <p class="modal-sub">Monto del gasto:</p>
+        <input id="inputMontoGasto" type="number" placeholder="Ej: 50000" class="input-modal">
+
+        <p class="modal-sub" style="margin-top: 15px;">Sobre de origen:</p>
+        <div id="listaSobresConfigurar" class="fuentes-modal"></div>
+        <p id="mensajeErrorConfigurarGasto" class="error-message" style="display: none; color: #d32f2f; font-size: 13px; margin-top: 5px;"></p>
+
+        <button id="btnConfirmarConfigurarGasto">Guardar configuración</button>
+        <button id="btnCerrarConfigurarGasto" class="close">Cerrar</button>
+    </div>
+</div>
+
+<!-- MODAL GASTAR GASTO FIJO -->
+<div id="modalGastarGastoFijo" class="modal hidden">
+    <div class="modal-content">
+        <h2>Gastar: <span id="nombreGastoGastar"></span></h2>
+        <p id="montoGastoGastar" style="text-align: center; color: rgba(139, 0, 197, 0.7); font-size: 14px; margin-top: 5px; margin-bottom: 15px; font-weight: 600;"></p>
+
+        <p class="modal-sub">Selecciona la fuente:</p>
+
+        <div id="listaFuentesGastarGasto" class="fuentes-modal"></div>
+
+        <button id="btnCerrarGastarGastoFijo" class="close">Cerrar</button>
+    </div>
+                    </div>
+                    
+<!-- MODAL CREAR PRÉSTAMO -->
+<div id="modalCrearPrestamo" class="modal hidden">
+    <div class="modal-content">
+        <h2>Crear préstamo</h2>
+
+        <p class="modal-sub">Nombre (a quien le prestamos):</p>
+        <input id="inputNombrePrestamo" type="text" placeholder="Ej: Juan, María, etc." class="input-modal">
+        <p id="mensajeErrorNombrePrestamo" class="error-message" style="display: none; color: #d32f2f; font-size: 13px; margin-top: 5px;"></p>
+
+        <p class="modal-sub" style="margin-top: 15px;">Monto del préstamo:</p>
+        <input id="inputMontoPrestamo" type="number" placeholder="Ej: 50000" class="input-modal">
+        <p id="mensajeErrorMontoPrestamo" class="error-message" style="display: none; color: #d32f2f; font-size: 13px; margin-top: 5px;"></p>
+
+        <p class="modal-sub" style="margin-top: 15px;">Sobre de origen:</p>
+        <div id="listaSobresPrestamo" class="fuentes-modal"></div>
+        <p id="mensajeErrorSobrePrestamo" class="error-message" style="display: none; color: #d32f2f; font-size: 13px; margin-top: 5px;"></p>
+
+        <p class="modal-sub" style="margin-top: 15px;">Fuente:</p>
+        <div id="listaFuentesPrestamo" class="fuentes-modal"></div>
+        <p id="mensajeErrorFuentePrestamo" class="error-message" style="display: none; color: #d32f2f; font-size: 13px; margin-top: 5px;"></p>
+
+        <p id="mensajeErrorCrearPrestamo" class="error-message" style="display: none; color: #d32f2f; font-size: 13px; margin-top: 10px;"></p>
+
+        <button id="btnConfirmarCrearPrestamo">Crear préstamo</button>
+        <button id="btnCerrarCrearPrestamo" class="close">Cerrar</button>
+                    </div>
+                </div>
+                
+<!-- MODAL DEVOLVER PRÉSTAMO -->
+<div id="modalDevolverPrestamo" class="modal hidden">
+    <div class="modal-content">
+        <h2>Devolver préstamo</h2>
+        <p id="nombrePrestamoDevolver" style="color: var(--morado); font-weight: 600; margin-bottom: 10px; font-size: 18px;"></p>
+        <p id="montoPrestamoDevolver" style="text-align: center; color: rgba(139, 0, 197, 0.7); font-size: 14px; margin-top: 5px; margin-bottom: 15px; font-weight: 600;"></p>
+        <p id="montoRestanteDevolver" style="text-align: center; color: #666; font-size: 13px; margin-bottom: 15px;"></p>
+
+        <p class="modal-sub">Monto a devolver:</p>
+        <input id="inputMontoDevolver" type="number" placeholder="Ej: 50000" class="input-modal">
+        <p id="mensajeErrorMontoDevolver" class="error-message" style="display: none; color: #d32f2f; font-size: 13px; margin-top: 5px;"></p>
+
+        <p class="modal-sub" style="margin-top: 15px;">Fuente donde se devuelve:</p>
+        <div id="listaFuentesDevolver" class="fuentes-modal"></div>
+        <p id="mensajeErrorFuenteDevolver" class="error-message" style="display: none; color: #d32f2f; font-size: 13px; margin-top: 5px;"></p>
+
+        <p id="mensajeErrorDevolverPrestamo" class="error-message" style="display: none; color: #d32f2f; font-size: 13px; margin-top: 10px;"></p>
+
+        <button id="btnConfirmarDevolverPrestamo">Devolver</button>
+        <button id="btnCerrarDevolverPrestamo" class="close">Cerrar</button>
+                </div>
+            </div>
+            
+<!-- MODAL CONFIRMAR ELIMINAR PRÉSTAMO -->
+<div id="modalConfirmarEliminarPrestamo" class="modal hidden">
+    <div class="modal-content">
+        <h2>¿Eliminar préstamo?</h2>
+        <p id="nombrePrestamoEliminar" style="color: var(--morado); font-weight: 600; margin-bottom: 10px; font-size: 18px;"></p>
+        <p id="montoPrestamoEliminar" style="text-align: center; color: rgba(139, 0, 197, 0.7); font-size: 14px; margin-top: 5px; margin-bottom: 20px; font-weight: 600;"></p>
+        <p class="modal-sub" style="margin: 20px 0; color: #666;">Esta acción eliminará el préstamo. El dinero prestado no se devolverá automáticamente.</p>
+        
+        <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
+            <button id="btnConfirmarEliminarPrestamo" class="danger" style="background-color: #d32f2f; color: white; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">Sí, eliminar</button>
+            <button id="btnCancelarEliminarPrestamo" class="close" style="padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL DE AUTENTICACIÓN (Login/Registro) -->
+<div id="modalAuth" class="modal hidden">
+    <div class="modal-content">
+        <h2 id="authModalTitle">Iniciar sesión</h2>
+        
+        <!-- Campo de username (solo visible en modo registro) -->
+        <div id="authUsernameContainer" class="hidden">
+            <p class="modal-sub">Nombre de usuario:</p>
+            <input id="inputAuthUsername" type="text" placeholder="Ej: juan123" class="input-modal">
+            <p id="mensajeErrorAuthUsername" class="error-message" style="display: none;"></p>
+        </div>
+        
+        <p class="modal-sub">Email:</p>
+        <input id="inputAuthEmail" type="email" placeholder="tu@email.com" class="input-modal">
+        <p id="mensajeErrorAuthEmail" class="error-message" style="display: none;"></p>
+        
+        <p class="modal-sub" style="margin-top: 15px;">Contraseña:</p>
+        <input id="inputAuthPassword" type="password" placeholder="Contraseña" class="input-modal">
+        <p id="mensajeErrorAuthPassword" class="error-message" style="display: none;"></p>
+        
+        <p id="mensajeErrorAuth" class="error-message" style="display: none; margin-top: 10px;"></p>
+        
+        <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px;">
+            <button id="btnConfirmarAuth">Continuar</button>
+            <button id="btnCerrarAuth" class="close">Cerrar</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL INFORMATIVO DE INICIO DE SESIÓN -->
+<div id="modalInformativoRegistro" class="modal hidden">
+    <div class="modal-content">
+        <h2>Inicia sesión para guardar tus datos</h2>
+        <p class="modal-sub" style="margin: 20px 0; color: #666; text-align: center;">
+            Inicia sesión para guardar tus datos de forma segura y acceder desde otros dispositivos.
+        </p>
+        
+        <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 25px;">
+            <button id="btnInformativoRegistro" class="btn-modal-primary">Registrarme</button>
+            <button id="btnInformativoLogin" class="btn-modal-secondary">Iniciar sesión</button>
+            <button id="btnCerrarInformativo" class="btn-modal-tertiary">Seguir usando sin iniciar</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL GUARDAR SIN USUARIO -->
+<div id="modalGuardarSinUsuario" class="modal hidden">
+    <div class="modal-content">
+        <h2>¿Quieres guardar tus datos?</h2>
+        <p class="modal-sub" style="margin: 20px 0; color: #666; text-align: center;">
+            Registra una cuenta para guardar tus datos y acceder desde otros dispositivos.
+        </p>
+        
+        <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 25px;">
+            <button id="btnIrRegistro" class="btn-modal-primary">Registrarme</button>
+            <button id="btnIrLogin" class="btn-modal-secondary">Iniciar sesión</button>
+            <button id="btnContinuarSinGuardar" class="btn-modal-tertiary">Seguir sin guardar</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL MENÚ DE USUARIO -->
+<div id="modalMenuUsuario" class="modal hidden">
+    <div class="modal-content modal-menu-usuario">
+        <h2>Mi cuenta</h2>
+        
+        <!-- Información del usuario -->
+        <div class="usuario-info">
+            <div class="usuario-icono-large">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 12C14.7614 12 17 9.76142 17 7C17 4.23858 14.7614 2 12 2C9.23858 2 7 4.23858 7 7C7 9.76142 9.23858 12 12 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M20.59 22C20.59 18.13 16.74 15 12 15C7.26 15 3.41 18.13 3.41 22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <p id="usuarioNombreMenu" class="usuario-nombre">Usuario</p>
+            <div class="usuario-email-container">
+                <div id="usuarioEmailWrapper" class="usuario-email-wrapper">
+                    <p id="usuarioEmailMenu" class="usuario-email">email@ejemplo.com</p>
+                    <button id="btnDesplegarCuentas" class="btn-flecha-cuentas" title="Cambiar cuenta">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                </div>
+                <div id="menuCuentas" class="menu-cuentas hidden">
+                    <div id="listaCuentas" class="lista-cuentas">
+                        <!-- Las cuentas se agregarán dinámicamente -->
+                    </div>
+                    <div id="btnAgregarCuenta" class="opcion-agregar-cuenta">
+                        <span class="icono-mas">+</span>
+                        <span>Agregar cuenta</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Opciones del menú -->
+        <div class="menu-usuario-opciones">
+            <button id="btnMenuConfiguracion" class="menu-usuario-item">
+                <span class="menu-icono">⚙️</span>
+                <span>Configuración</span>
+            </button>
+            
+            <button id="btnMenuCambiarContrasena" class="menu-usuario-item">
+                <span class="menu-icono">🔒</span>
+                <span>Cambiar contraseña</span>
+            </button>
+            
+            <button id="btnMenuCambiarUsername" class="menu-usuario-item">
+                <span class="menu-icono">👤</span>
+                <span>Cambiar nombre de usuario</span>
+            </button>
+            
+            <div class="menu-divider"></div>
+            
+            <button id="btnMenuCerrarSesion" class="menu-usuario-item menu-item-danger">
+                <span class="menu-icono">🚪</span>
+                <span>Cerrar sesión</span>
+            </button>
+        </div>
+        
+        <button id="btnCerrarMenuUsuario" class="close" style="margin-top: 20px;">Cerrar</button>
+    </div>
+</div>
+
+<!-- MODAL CONFIRMAR CERRAR SESIÓN -->
+<div id="modalConfirmarCerrarSesion" class="modal hidden">
+    <div class="modal-content">
+        <h2>¿Cerrar sesión?</h2>
+        <p class="modal-sub" style="margin: 20px 0; color: #666; text-align: center;">
+            ¿Estás seguro que quieres cerrar sesión? Podrás volver a iniciar sesión cuando quieras.
+        </p>
+        
+        <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 25px;">
+            <button id="btnConfirmarCerrarSesion" class="btn-modal-primary">Sí, cerrar sesión</button>
+            <button id="btnCancelarCerrarSesion" class="btn-modal-secondary">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL CONFIRMAR ELIMINAR CUENTA -->
+<div id="modalConfirmarEliminarCuenta" class="modal hidden">
+    <div class="modal-content">
+        <h2>¿Eliminar cuenta permanentemente?</h2>
+        <p class="modal-sub" style="margin: 20px 0; color: #666; text-align: center;">
+            Esta acción eliminará tu cuenta y todos tus datos de forma permanente. No podrás recuperar tu información después de eliminar la cuenta. Esta acción no se puede deshacer.
+        </p>
+        
+        <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 25px;">
+            <button id="btnConfirmarEliminarCuenta" class="btn-modal-danger">Sí, eliminar cuenta</button>
+            <button id="btnCancelarEliminarCuenta" class="btn-modal-secondary">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL VERIFICACIÓN DE EMAIL (OTP) -->
+<div id="modalVerificarEmail" class="modal hidden">
+    <div class="modal-content">
+        <h2>Verificar Email</h2>
+        <p class="modal-sub" style="margin: 20px 0; color: #666; text-align: center;">
+            Hemos enviado un código de verificación a <strong id="emailVerificacionMostrar"></strong><br>
+            Por favor ingresa el código de 6 dígitos que recibiste.
+        </p>
+        
+        <p class="modal-sub" style="margin-top: 20px;">Código de verificación:</p>
+        <input id="inputCodigoVerificacion" type="text" placeholder="123456" class="input-modal" maxlength="6" pattern="[0-9]{6}">
+        <p id="mensajeErrorCodigoVerificacion" class="error-message" style="display: none;"></p>
+        
+        <div style="margin-top: 15px; text-align: center;">
+            <button id="btnReenviarCodigo" class="btn-modal-tertiary" style="font-size: 13px;">Reenviar código</button>
+        </div>
+        
+        <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 25px;">
+            <button id="btnConfirmarCodigoVerificacion" class="btn-modal-primary">Verificar y Registrar</button>
+            <button id="btnCancelarVerificacion" class="btn-modal-secondary">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL CAMBIAR CONTRASEÑA -->
+<div id="modalCambiarContrasena" class="modal hidden">
+    <div class="modal-content">
+        <h2>Cambiar contraseña</h2>
+        
+        <p class="modal-sub">Contraseña actual:</p>
+        <input id="inputContrasenaActual" type="password" placeholder="Ingresa tu contraseña actual" class="input-modal">
+        <p id="mensajeErrorContrasenaActual" class="error-message" style="display: none;"></p>
+        
+        <p class="modal-sub" style="margin-top: 15px;">Nueva contraseña:</p>
+        <input id="inputNuevaContrasena" type="password" placeholder="Ingresa tu nueva contraseña" class="input-modal">
+        <p id="mensajeErrorNuevaContrasena" class="error-message" style="display: none;"></p>
+        
+        <p class="modal-sub" style="margin-top: 15px;">Confirmar nueva contraseña:</p>
+        <input id="inputConfirmarNuevaContrasena" type="password" placeholder="Confirma tu nueva contraseña" class="input-modal">
+        <p id="mensajeErrorConfirmarContrasena" class="error-message" style="display: none;"></p>
+        
+        <p id="mensajeErrorCambiarContrasena" class="error-message" style="display: none; margin-top: 10px;"></p>
+        
+        <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px;">
+            <button id="btnConfirmarCambiarContrasena">Cambiar contraseña</button>
+            <button id="btnCerrarCambiarContrasena" class="close">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL CAMBIAR NOMBRE DE USUARIO -->
+<div id="modalCambiarUsername" class="modal hidden">
+    <div class="modal-content">
+        <h2>Cambiar nombre de usuario</h2>
+        
+        <p class="modal-sub">Nuevo nombre de usuario:</p>
+        <input id="inputNuevoUsername" type="text" placeholder="Ej: juan123" class="input-modal">
+        <p id="mensajeErrorNuevoUsername" class="error-message" style="display: none;"></p>
+        <p class="modal-sub" style="font-size: 12px; color: #666; margin-top: 5px;">
+            Solo letras y números, sin caracteres especiales. Mínimo 3 caracteres.
+        </p>
+        
+        <p id="mensajeErrorCambiarUsername" class="error-message" style="display: none; margin-top: 10px;"></p>
+        
+        <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px;">
+            <button id="btnConfirmarCambiarUsername">Cambiar nombre de usuario</button>
+            <button id="btnCerrarCambiarUsername" class="close">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<!-- NOTIFICACIONES TOAST -->
+<div id="toastContainer" class="toast-container"></div>
+
+<!-- Scripts JS -->
+<!-- firebase.js debe cargarse primero (aunque auth.js lo importa, esto asegura que esté disponible) -->
+<script type="module" src="src/js/firebase.js"></script>
+<!-- auth.js importa firebase.js, por lo que debe ser módulo ES -->
+<script type="module" src="src/js/auth.js"></script>
+<!-- guards.js no usa import/export, puede ser script normal -->
+<script src="src/js/guards.js"></script>
+<!-- app.js debe ser módulo si usa import/export -->
+<script type="module" src="src/js/app.js"></script>
+<!-- EmailJS SDK para envío de emails -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+</body>
+</html>
